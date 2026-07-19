@@ -1,92 +1,14 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador Turbo | Fellipe Dev</title>
-    <style>
-        body { font-family: system-ui, sans-serif; background: #0a0a0a; color: #f5f5f7; padding: 40px 20px; max-width: 700px; margin: 0 auto; }
-        h2 { color: #0a84ff; margin-bottom: 8px; }
-        .subtitle { color: #a1a1a6; margin-bottom: 32px; font-size: 0.95rem; }
-        .card { background: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
-        .card h3 { color: #f5f5f7; margin-bottom: 16px; font-size: 1.1rem; }
-        label { display: block; margin: 12px 0 6px; font-size: 0.85rem; color: #a1a1a6; font-weight: 500; }
-        input, select, textarea { width: 100%; padding: 12px; background: #0a0a0a; border: 1px solid #2c2c2e; color: #fff; border-radius: 8px; font-size: 0.95rem; font-family: inherit; }
-        textarea { font-family: monospace; font-size: 0.85rem; min-height: 120px; resize: vertical; }
-        button { background: #0a84ff; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem; transition: background 0.2s; }
-        button:hover { background: #0071e3; }
-        .checkbox-row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
-        .checkbox-row input { width: auto; }
-        .row { display: flex; gap: 16px; }
-        .row > div { flex: 1; }
-        @media (max-width: 600px) { .row { flex-direction: column; gap: 0; } }
-    </style>
-</head>
-<body>
-    <h2>⚡ Gerador de Ofertas Turbo</h2>
-    <p class="subtitle">Preencha os dados. Se a extensão preencheu automaticamente, é só revisar e baixar!</p>
-
-    <div class="card">
-        <h3>📦 Dados do Produto</h3>
-        <label>Título do Produto</label>
-        <input type="text" id="titulo" placeholder="Ex: Mouse Logitech MX Master 3">
-
-        <label>Link da Imagem</label>
-        <input type="text" id="imagem" placeholder="URL da imagem (jpg/webp)">
-
-        <div class="row">
-            <div>
-                <label>Preço Antigo</label>
-                <input type="text" id="precoAntigo" placeholder="R$ 699,00">
-            </div>
-            <div>
-                <label>Preço Atual</label>
-                <input type="text" id="precoAtual" placeholder="R$ 549,00">
-            </div>
-        </div>
-
-        <label>Seu Link de Afiliado</label>
-        <input type="text" id="link" placeholder="https://www.amazon.com.br/...?tag=seutag-20">
-
-        <div class="row">
-            <div>
-                <label>Categoria</label>
-                <select id="categoria">
-                    <option value="Tech">Tech & Setup</option>
-                    <option value="Casa">Casa & Office</option>
-                    <option value="Livros">Livros & Kindle</option>
-                </select>
-            </div>
-            <div>
-                <label>Destaque (Badge)</label>
-                <input type="text" id="destaque" placeholder="Ex: Oferta, Frete Grátis">
-            </div>
-        </div>
-
-        <label>Data de Expiração da Oferta (Opcional)</label>
-        <input type="datetime-local" id="expiraEm">
-
-        <div class="checkbox-row">
-            <input type="checkbox" id="recomendado">
-            <label for="recomendado" style="margin: 0; color: #ffd60a;">⭐ Selo "Fellipe Recomenda" (Testado por você)</label>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>📂 JSON Atual (Opcional)</h3>
-        <label>Cole o conteúdo do <code>produtos.json</code> atual para não perder os antigos</label>
-        <textarea id="jsonAtual" placeholder='[&#10;  {&#10;    "id": 123456...&#10;  }&#10;]'></textarea>
-    </div>
-
-    <button onclick="gerarEBaixar()">⬇️ Gerar e Baixar produtos.json</button>
-
     <script>
-        // Ler parâmetros da URL (para a extensão funcionar)
+        // Ler parâmetros da URL (A mágica da extensão acontecendo aqui)
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
+            
+            // Preenche os campos automaticamente se a extensão enviou os dados
             if (params.has('titulo')) document.getElementById('titulo').value = params.get('titulo');
             if (params.has('imagem')) document.getElementById('imagem').value = params.get('imagem');
             if (params.has('preco')) document.getElementById('precoAtual').value = params.get('preco');
+            if (params.has('precoAntigo')) document.getElementById('precoAntigo').value = params.get('precoAntigo'); // NOVO!
+            if (params.has('link')) document.getElementById('link').value = params.get('link'); // NOVO!
         };
 
         function gerarEBaixar() {
@@ -135,5 +57,3 @@
             URL.revokeObjectURL(url);
         }
     </script>
-</body>
-</html>
