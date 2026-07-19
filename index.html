@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header class="header">
@@ -16,7 +17,8 @@
                 <h1>ofertas.<span class="highlight">fellipedev</span></h1>
             </div>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Buscar produtos (ex: teclado, kindle...)">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Buscar produtos...">
             </div>
         </div>
     </header>
@@ -30,14 +32,22 @@
         </div>
 
         <div class="products-grid" id="productsGrid">
-            <!-- Os produtos serão inseridos aqui pelo JavaScript -->
+            <!-- Skeleton Loading inicial -->
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-text"></div><div class="skeleton-text short"></div><div class="skeleton-btn"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-text"></div><div class="skeleton-text short"></div><div class="skeleton-btn"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-info"><div class="skeleton-text"></div><div class="skeleton-text short"></div><div class="skeleton-btn"></div></div></div>
         </div>
     </main>
 
+    <!-- Botão Flutuante WhatsApp -->
+    <a href="https://wa.me/?text=Confira%20as%20melhores%20ofertas%20tech%20do%20Fellipe:%20ofertas.fellipedev.com.br" target="_blank" class="whatsapp-float" title="Compartilhar no WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <footer class="footer">
         <div class="container">
-            <p>Participamos do Programa de Associados da Amazon Services LLC, um programa de publicidade de afiliados desenvolvido para fornecer um meio para sites ganharem taxas de publicidade anunciando e vinculando à Amazon.com.br.</p>
-            <p class="copyright">© 2024 Fellipe Dev. Todos os direitos reservados.</p>
+            <p>Participamos do Programa de Associados da Amazon Services LLC.</p>
+            <p class="copyright">© 2024 Fellipe Dev.</p>
         </div>
     </footer>
 
