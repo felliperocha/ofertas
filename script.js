@@ -35,7 +35,7 @@ const produtos = [
     },
     ,
     {
-        id: 1784473963747,
+        id: 4,
         titulo: "Smartphone Motorola G86 256GB Grafite 5G 8GB+8GB RAM Boost Inteligente 6,7" Câm. Dupla + Selfie 32MP",
         imagem: "https://a-static.mlcdn.com.br/800x560/smartphone-motorola-g86-256gb-grafite-5g-8gb-8gb-ram-boost-inteligente-67-cam-dupla-selfie-32mp/magazineluiza/240248200/e0b6f0e3d6e5d3622c2761f977278644.jpg",
         precoAntigo: "1987,00",
