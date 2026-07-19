@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofertas | Fellipe Dev</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>ofertas.<span class="highlight">fellipedev</span></h1>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Buscar produtos (ex: teclado, kindle...)">
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="filters" id="categoryFilters">
+            <button class="filter-btn active" data-category="all">Todos</button>
+            <button class="filter-btn" data-category="Tech">Tech & Setup</button>
+            <button class="filter-btn" data-category="Casa">Casa & Office</button>
+            <button class="filter-btn" data-category="Livros">Livros & Kindle</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Os produtos serão inseridos aqui pelo JavaScript -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Participamos do Programa de Associados da Amazon Services LLC, um programa de publicidade de afiliados desenvolvido para fornecer um meio para sites ganharem taxas de publicidade anunciando e vinculando à Amazon.com.br.</p>
+            <p class="copyright">© 2024 Fellipe Dev. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
