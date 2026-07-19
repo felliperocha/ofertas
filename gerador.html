@@ -1,17 +1,617 @@
-    <script>
-        // Ler parâmetros da URL (A mágica da extensão acontecendo aqui)
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            
-            // Preenche os campos automaticamente se a extensão enviou os dados
-            if (params.has('titulo')) document.getElementById('titulo').value = params.get('titulo');
-            if (params.has('imagem')) document.getElementById('imagem').value = params.get('imagem');
-            if (params.has('preco')) document.getElementById('precoAtual').value = params.get('preco');
-            if (params.has('precoAntigo')) document.getElementById('precoAntigo').value = params.get('precoAntigo'); // NOVO!
-            if (params.has('link')) document.getElementById('link').value = params.get('link'); // NOVO!
-        };
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Ofertas | Fellipe Dev</title>
+    <style>
+        /* ==========================================
+           RESET E VARIÁVEIS
+           ========================================== */
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #151516;
+            --bg-card: #1c1c1e;
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --accent: #0a84ff;
+            --accent-hover: #0071e3;
+            --success: #30d158;
+            --danger: #ff453a;
+            --gold: #ffd60a;
+            --border: #2c2c2e;
+            --radius: 12px;
+            --amazon-orange: #ff9900;
+            --magalu-blue: #0086ff;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        /* ==========================================
+           LAYOUT
+           ========================================== */
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 32px 20px 64px;
+        }
+
+        /* ==========================================
+           HEADER
+           ========================================== */
+        .page-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 .icon {
+            margin-right: 8px;
+        }
+
+        .page-header .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .page-header .badge-auto {
+            display: inline-block;
+            background: rgba(48, 209, 88, 0.15);
+            color: var(--success);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 99px;
+            margin-top: 12px;
+        }
+
+        /* ==========================================
+           CARDS (SEÇÕES)
+           ========================================== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ==========================================
+           FORMULÁRIO
+           ========================================== */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2);
+        }
+
+        input[readonly] {
+            background: var(--bg-secondary);
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        textarea {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .row > .form-group {
+            flex: 1;
+        }
+
+        @media (max-width: 600px) {
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #636366;
+            margin-top: 4px;
+        }
+
+        /* ==========================================
+           CHECKBOX CUSTOMIZADO
+           ========================================== */
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(255, 214, 10, 0.05);
+            border: 1px solid rgba(255, 214, 10, 0.15);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checkbox-row:hover {
+            background: rgba(255, 214, 10, 0.1);
+        }
+
+        .checkbox-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+
+        .checkbox-row span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--gold);
+        }
+
+        /* ==========================================
+           LOJA BADGE
+           ========================================== */
+        .loja-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .loja-badge.amazon {
+            background: rgba(255, 153, 0, 0.15);
+            color: var(--amazon-orange);
+            border: 1px solid rgba(255, 153, 0, 0.3);
+        }
+
+        .loja-badge.magalu {
+            background: rgba(0, 134, 255, 0.15);
+            color: var(--magalu-blue);
+            border: 1px solid rgba(0, 134, 255, 0.3);
+        }
+
+        .loja-badge.outro {
+            background: rgba(161, 161, 166, 0.15);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        /* ==========================================
+           PREVIEW DA IMAGEM
+           ========================================== */
+        .image-preview {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .image-preview.visible {
+            display: block;
+        }
+
+        /* ==========================================
+           BOTÕES
+           ========================================== */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #000;
+            margin-top: 12px;
+        }
+
+        .btn-success:hover {
+            background: #28c74e;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            margin-top: 12px;
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        /* ==========================================
+           TOAST (NOTIFICAÇÃO)
+           ========================================== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* ==========================================
+           SEÇÃO DE DESCONTO AO VIVO
+           ========================================== */
+        .discount-live {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255, 69, 58, 0.1);
+            border: 1px solid rgba(255, 69, 58, 0.2);
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .discount-live .percent {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+        .discount-live .text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .discount-live.hidden {
+            display: none;
+        }
+
+        /* ==========================================
+           FOOTER
+           ========================================== */
+        .page-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: #636366;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="page-header">
+            <h1><span class="icon">⚡</span> Gerador de Ofertas</h1>
+            <p class="subtitle">Preencha os dados do produto e baixe o <code>produtos.json</code></p>
+            <span class="badge-auto" id="badgeAuto" style="display: none;">✨ Preenchido automaticamente pela extensão</span>
+        </div>
+
+        <!-- SEÇÃO 1: LOJA -->
+        <div class="card">
+            <div class="card-title">🏪 Loja de Origem</div>
+            <div id="lojaDisplay">
+                <span class="loja-badge outro">Nenhuma loja detectada</span>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 2: DADOS DO PRODUTO -->
+        <div class="card">
+            <div class="card-title">📦 Dados do Produto</div>
+
+            <div class="form-group">
+                <label for="titulo">Título do Produto *</label>
+                <input type="text" id="titulo" placeholder="Ex: Mouse Logitech MX Master 3S">
+            </div>
+
+            <div class="form-group">
+                <label for="imagem">Link da Imagem</label>
+                <input type="text" id="imagem" placeholder="https://m.media-amazon.com/images/I/..." oninput="previewImage()">
+                <p class="hint">Botão direito na imagem do produto → Copiar endereço da imagem</p>
+                <img id="imagePreview" class="image-preview" alt="Preview">
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="precoAntigo">Preço Antigo</label>
+                    <input type="text" id="precoAntigo" placeholder="R$ 699,00" oninput="calcularDesconto()">
+                </div>
+                <div class="form-group">
+                    <label for="precoAtual">Preço Atual *</label>
+                    <input type="text" id="precoAtual" placeholder="R$ 549,00" oninput="calcularDesconto()">
+                </div>
+            </div>
+
+            <div class="discount-live hidden" id="discountLive">
+                <span class="percent" id="discountPercent">-0%</span>
+                <span class="text">de desconto calculado automaticamente</span>
+            </div>
+
+            <div class="form-group" style="margin-top: 16px;">
+                <label for="link">Seu Link de Afiliado *</label>
+                <input type="text" id="link" placeholder="https://www.amazon.com.br/dp/...?tag=seutag-20">
+                <p class="hint">Para Amazon: inclua ?tag=seu-tag. Para Magalu: use o link da Lomadee/Parceiros.</p>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 3: CATEGORIA E DESTAQUE -->
+        <div class="card">
+            <div class="card-title">🏷️ Categoria e Destaque</div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria">
+                        <option value="Tech">💻 Tech & Setup</option>
+                        <option value="Casa">🏠 Casa & Office</option>
+                        <option value="Livros">📚 Livros & Kindle</option>
+                        <option value="Games">🎮 Games</option>
+                        <option value="Audio">🎧 Áudio</option>
+                        <option value="Smart">📱 Smartphones</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="destaque">Badge de Destaque</label>
+                    <input type="text" id="destaque" placeholder="Ex: Oferta, Frete Grátis, Mais Vendido">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="expiraEm">Data de Expiração da Oferta (Opcional)</label>
+                <input type="datetime-local" id="expiraEm">
+                <p class="hint">Se preenchido, um contador regressivo aparecerá no card do produto.</p>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-row" for="recomendado">
+                    <input type="checkbox" id="recomendado">
+                    <span>⭐ Selo "Fellipe Recomenda" (produto testado por você)</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 4: JSON ATUAL -->
+        <div class="card">
+            <div class="card-title">📂 JSON Atual (Para manter os produtos antigos)</div>
+            <div class="form-group">
+                <label for="jsonAtual">Cole aqui o conteúdo do seu <code>produtos.json</code> atual</label>
+                <textarea id="jsonAtual" placeholder='[&#10;  {&#10;    "id": 1715623456789,&#10;    "titulo": "Kindle 11ª Geração",&#10;    ...&#10;  }&#10;]'></textarea>
+                <p class="hint">Deixe em branco se este for o primeiro produto.</p>
+            </div>
+        </div>
+
+        <!-- BOTÕES -->
+        <button class="btn btn-primary" onclick="gerarEBaixar()">
+            ⬇️ Gerar e Baixar produtos.json
+        </button>
+
+        <button class="btn btn-outline" onclick="limparFormulario()">
+            🗑️ Limpar Formulário
+        </button>
+
+        <!-- FOOTER -->
+        <div class="page-footer">
+            <p>Gerador v3.0 • ofertas.fellipedev.com.br</p>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">✅ Arquivo baixado com sucesso!</div>
+
+    <script>
+        // ==========================================
+        // 1. LEITURA DE PARÂMETROS DA URL (EXTENSÃO)
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            let preenchidoAutomaticamente = false;
+
+            if (params.has('titulo')) {
+                document.getElementById('titulo').value = params.get('titulo');
+                preenchidoAutomaticamente = true;
+            }
+            if (params.has('imagem')) {
+                document.getElementById('imagem').value = params.get('imagem');
+                previewImage();
+                preenchidoAutomaticamente = true;
+            }
+            if (params.has('preco')) {
+                document.getElementById('precoAtual').value = params.get('preco');
+                preenchidoAutomaticamente = true;
+            }
+            if (params.has('precoAntigo')) {
+                document.getElementById('precoAntigo').value = params.get('precoAntigo');
+                calcularDesconto();
+                preenchidoAutomaticamente = true;
+            }
+            if (params.has('link')) {
+                document.getElementById('link').value = params.get('link');
+                preenchidoAutomaticamente = true;
+            }
+
+            // Loja de origem
+            if (params.has('loja')) {
+                const loja = params.get('loja');
+                const display = document.getElementById('lojaDisplay');
+                
+                let classe = 'outro';
+                let icone = '🏪';
+                
+                if (loja === 'Amazon') {
+                    classe = 'amazon';
+                    icone = '📦';
+                } else if (loja === 'Magalu') {
+                    classe = 'magalu';
+                    icone = '🛒';
+                }
+                
+                display.innerHTML = `<span class="loja-badge ${classe}">${icone} ${loja}</span>`;
+                preenchidoAutomaticamente = true;
+            }
+
+            // Mostra badge "preenchido automaticamente"
+            if (preenchidoAutomaticamente) {
+                document.getElementById('badgeAuto').style.display = 'inline-block';
+                calcularDesconto();
+            }
+        });
+
+        // ==========================================
+        // 2. PREVIEW DA IMAGEM
+        // ==========================================
+        function previewImage() {
+            const url = document.getElementById('imagem').value.trim();
+            const preview = document.getElementById('imagePreview');
+            
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                preview.src = url;
+                preview.classList.add('visible');
+                preview.onerror = () => {
+                    preview.classList.remove('visible');
+                };
+            } else {
+                preview.classList.remove('visible');
+            }
+        }
+
+        // ==========================================
+        // 3. CÁLCULO DE DESCONTO AO VIVO
+        // ==========================================
+        function parsePrice(str) {
+            if (!str) return 0;
+            return parseFloat(str.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        }
+
+        function calcularDesconto() {
+            const oldP = parsePrice(document.getElementById('precoAntigo').value);
+            const newP = parsePrice(document.getElementById('precoAtual').value);
+            const liveEl = document.getElementById('discountLive');
+            const percentEl = document.getElementById('discountPercent');
+
+            if (oldP > 0 && newP > 0 && oldP > newP) {
+                const desconto = Math.round((1 - newP / oldP) * 100);
+                percentEl.textContent = `-${desconto}%`;
+                liveEl.classList.remove('hidden');
+            } else {
+                liveEl.classList.add('hidden');
+            }
+        }
+
+        // ==========================================
+        // 4. GERAR E BAIXAR JSON
+        // ==========================================
         function gerarEBaixar() {
+            // Coleta os dados
             const novoProduto = {
                 id: Date.now(),
                 titulo: document.getElementById('titulo').value.trim(),
@@ -25,27 +625,46 @@
                 recomendado: document.getElementById('recomendado').checked
             };
 
-            if (!novoProduto.titulo || !novoProduto.link) {
-                alert('Título e Link de Afiliado são obrigatórios!');
+            // Validação
+            if (!novoProduto.titulo) {
+                showToast('⚠️ O título do produto é obrigatório!', true);
+                document.getElementById('titulo').focus();
+                return;
+            }
+            if (!novoProduto.precoAtual) {
+                showToast('⚠️ O preço atual é obrigatório!', true);
+                document.getElementById('precoAtual').focus();
+                return;
+            }
+            if (!novoProduto.link) {
+                showToast('⚠️ O link de afiliado é obrigatório!', true);
+                document.getElementById('link').focus();
                 return;
             }
 
+            // Processa o JSON atual
             let listaProdutos = [];
             const jsonAtualTexto = document.getElementById('jsonAtual').value.trim();
-            
+
             if (jsonAtualTexto) {
                 try {
                     listaProdutos = JSON.parse(jsonAtualTexto);
-                    if (!Array.isArray(listaProdutos)) throw new Error();
+                    if (!Array.isArray(listaProdutos)) {
+                        throw new Error('JSON não é um array');
+                    }
                 } catch (e) {
-                    alert('Erro: O JSON atual está inválido.');
+                    showToast('⚠️ Erro: O JSON atual está inválido. Verifique a formatação.', true);
                     return;
                 }
             }
 
-            listaProdutos.push(novoProduto);
+            // Adiciona o novo produto no início (mais recente primeiro)
+            listaProdutos.unshift(novoProduto);
+
+            // Gera o JSON final
             const jsonFinal = JSON.stringify(listaProdutos, null, 4);
 
+            // Cria e baixa o arquivo
             const blob = new Blob([jsonFinal], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -55,5 +674,50 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+
+            // Atualiza a área de JSON com o novo conteúdo (para facilitar cópias subsequentes)
+            document.getElementById('jsonAtual').value = jsonFinal;
+
+            // Mostra toast de sucesso
+            showToast('✅ produtos.json baixado! Agora suba no GitHub.');
+        }
+
+        // ==========================================
+        // 5. TOAST (NOTIFICAÇÃO)
+        // ==========================================
+        function showToast(mensagem, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = mensagem;
+            toast.style.borderColor = isError ? 'var(--danger)' : 'var(--success)';
+            toast.style.color = isError ? 'var(--danger)' : 'var(--success)';
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        // ==========================================
+        // 6. LIMPAR FORMULÁRIO
+        // ==========================================
+        function limparFormulario() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                document.getElementById('titulo').value = '';
+                document.getElementById('imagem').value = '';
+                document.getElementById('precoAntigo').value = '';
+                document.getElementById('precoAtual').value = '';
+                document.getElementById('link').value = '';
+                document.getElementById('destaque').value = '';
+                document.getElementById('expiraEm').value = '';
+                document.getElementById('recomendado').checked = false;
+                document.getElementById('imagePreview').classList.remove('visible');
+                document.getElementById('discountLive').classList.add('hidden');
+                document.getElementById('lojaDisplay').innerHTML = '<span class="loja-badge outro">Nenhuma loja detectada</span>';
+                document.getElementById('badgeAuto').style.display = 'none';
+                showToast('🗑️ Formulário limpo!');
+            }
         }
     </script>
+
+</body>
+</html>
