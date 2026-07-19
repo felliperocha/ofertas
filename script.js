@@ -32,6 +32,17 @@ const produtos = [
         link: "https://www.amazon.com.br/dp/B08C7KQZJ9?tag=seutag-20",
         categoria: "Casa",
         destaque: "Frete Grátis"
+    },
+    ,
+    {
+        id: 1784473963747,
+        titulo: "Smartphone Motorola G86 256GB Grafite 5G 8GB+8GB RAM Boost Inteligente 6,7" Câm. Dupla + Selfie 32MP",
+        imagem: "https://a-static.mlcdn.com.br/800x560/smartphone-motorola-g86-256gb-grafite-5g-8gb-8gb-ram-boost-inteligente-67-cam-dupla-selfie-32mp/magazineluiza/240248200/e0b6f0e3d6e5d3622c2761f977278644.jpg",
+        precoAntigo: "1987,00",
+        precoAtual: "1799,10",
+        link: "https://www.magazinevoce.com.br/magazinefellipesantos/smartphone-motorola-g86-256gb-grafite-5g-8gb-8gb-ram-boost-inteligente-67-cam-dupla-selfie-32mp/p/240248200/te/mg86/",
+        categoria: "Tech",
+        destaque: "Smartphone Motorola G86 256GB Grafite 5G 8GB+8GB RAM Boost"
     }
 ];
 
