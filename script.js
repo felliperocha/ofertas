@@ -1,63 +1,43 @@
 // ==========================================
-// BASE DE DADOS DE PRODUTOS
-// Adicione novos produtos aqui seguindo o modelo!
-// ==========================================
-const produtos = [
-    {
-        id: 1,
-        titulo: "Kindle 11ª Geração 16GB",
-        imagem: "https://m.media-amazon.com/images/I/51QCk82iGcL._AC_SL1000_.jpg",
-        precoAntigo: "R$ 499,00",
-        precoAtual: "R$ 374,00",
-        link: "https://www.amazon.com.br/dp/B09SWW583J?tag=seutag-20", // Substitua pelo seu link de afiliado
-        categoria: "Livros",
-        destaque: "Mais Vendido"
-    },
-    {
-        id: 2,
-        titulo: "Teclado Mecânico Redragon Kumara RGB",
-        imagem: "https://m.media-amazon.com/images/I/71VbQaRk+ZL._AC_SL1500_.jpg",
-        precoAntigo: "R$ 289,90",
-        precoAtual: "R$ 219,90",
-        link: "https://www.amazon.com.br/dp/B019O9BLVY?tag=seutag-20",
-        categoria: "Tech",
-        destaque: "Oferta"
-    },
-    {
-        id: 3,
-        titulo: "Cadeira Ergonômica Flexform",
-        imagem: "https://m.media-amazon.com/images/I/61k1+gKqZwL._AC_SL1500_.jpg",
-        precoAntigo: "R$ 1.299,00",
-        precoAtual: "R$ 899,00",
-        link: "https://www.amazon.com.br/dp/B08C7KQZJ9?tag=seutag-20",
-        categoria: "Casa",
-        destaque: "Frete Grátis"
-    },
-    ,
-    {
-        id: 4,
-        titulo: "Smartphone Motorola G86 256GB Grafite 5G 8GB+8GB RAM Boost Inteligente 6,7" Câm. Dupla + Selfie 32MP",
-        imagem: "https://a-static.mlcdn.com.br/800x560/smartphone-motorola-g86-256gb-grafite-5g-8gb-8gb-ram-boost-inteligente-67-cam-dupla-selfie-32mp/magazineluiza/240248200/e0b6f0e3d6e5d3622c2761f977278644.jpg",
-        precoAntigo: "1987,00",
-        precoAtual: "1799,10",
-        link: "https://www.magazinevoce.com.br/magazinefellipesantos/smartphone-motorola-g86-256gb-grafite-5g-8gb-8gb-ram-boost-inteligente-67-cam-dupla-selfie-32mp/p/240248200/te/mg86/",
-        categoria: "Tech",
-        destaque: "Smartphone Motorola G86 256GB Grafite 5G 8GB+8GB RAM Boost"
-    }
-];
-
-// ==========================================
-// LÓGICA DE RENDERIZAÇÃO
+// CONFIGURAÇÃO E VARIÁVEIS GLOBAIS
 // ==========================================
 const productsGrid = document.getElementById('productsGrid');
 const searchInput = document.getElementById('searchInput');
 const filterBtns = document.querySelectorAll('.filter-btn');
+let produtos = []; // Array vazio, será preenchido pelo fetch
 
+// ==========================================
+// CARREGAR PRODUTOS DO ARQUIVO JSON
+// ==========================================
+async function carregarProdutos() {
+    // O ?t=Date.now() força o navegador a buscar o arquivo novo, evitando cache do GitHub Pages
+    const url = `produtos.json?t=${Date.now()}`; 
+    
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Arquivo produtos.json não encontrado.');
+        
+        produtos = await response.json();
+        renderProducts(produtos);
+    } catch (error) {
+        productsGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                <h2 style="color: #ff453a; margin-bottom: 16px;">⚠️ Nenhum produto cadastrado ainda</h2>
+                <p style="color: var(--text-secondary);">Use o <strong>gerador.html</strong> para criar seu arquivo <code>produtos.json</code> e faça upload para o GitHub.</p>
+            </div>
+        `;
+        console.error('Erro ao carregar JSON:', error);
+    }
+}
+
+// ==========================================
+// LÓGICA DE RENDERIZAÇÃO
+// ==========================================
 function renderProducts(lista) {
     productsGrid.innerHTML = '';
     
     if (lista.length === 0) {
-        productsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">Nenhum produto encontrado.</p>';
+        productsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">Nenhum produto encontrado nesta categoria.</p>';
         return;
     }
 
@@ -82,7 +62,9 @@ function renderProducts(lista) {
     });
 }
 
-// Filtro por Categoria
+// ==========================================
+// FILTROS E BUSCA
+// ==========================================
 filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         filterBtns.forEach(b => b.classList.remove('active'));
@@ -98,7 +80,6 @@ filterBtns.forEach(btn => {
     });
 });
 
-// Busca em Tempo Real
 searchInput.addEventListener('input', (e) => {
     const termo = e.target.value.toLowerCase();
     const filtrados = produtos.filter(p => 
@@ -108,5 +89,5 @@ searchInput.addEventListener('input', (e) => {
     renderProducts(filtrados);
 });
 
-// Renderização inicial
-renderProducts(produtos);
+// Iniciar o site
+carregarProdutos();
